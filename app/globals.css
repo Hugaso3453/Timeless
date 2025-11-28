@@ -5,6 +5,22 @@
   --foreground: #171717;
 }
 
+@keyframes fadeOverlay {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fadeOverlay {
+  animation: fadeOverlay 0.35s ease-out forwards;
+}
+
+
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
