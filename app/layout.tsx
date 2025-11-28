@@ -3,6 +3,14 @@ import Header from "@/components/Header";
 import { SidebarProvider } from "@/context/SidebarContext";
 import Sidebar from "@/components/Sidebar";
 import "leaflet/dist/leaflet.css";
+import HeaderWrapper from "@/components/headerWrapper";
+import { Roboto_Condensed } from "next/font/google";
+
+const robotoCondensed = Roboto_Condensed({
+  subsets: ["latin"],
+  weight: ["300", "400", "500", "700"], // you can choose which weights you want
+});
+
 
 export const metadata = {
   title: "Timeless",
@@ -12,10 +20,9 @@ export const metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
-      <body>
+      <body className={robotoCondensed.className}>
         <SidebarProvider>
-          <Header />
-          <Sidebar />
+          <HeaderWrapper />
           <main className="relative">{children}</main>
         </SidebarProvider>
       </body>
