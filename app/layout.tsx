@@ -5,6 +5,7 @@ import Sidebar from "@/components/Sidebar";
 import "leaflet/dist/leaflet.css";
 import HeaderWrapper from "@/components/headerWrapper";
 import { Roboto_Condensed } from "next/font/google";
+import Footer from "@/components/footer";
 
 const robotoCondensed = Roboto_Condensed({
   subsets: ["latin"],
@@ -24,6 +25,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <SidebarProvider>
           <HeaderWrapper />
           <main className="relative">{children}</main>
+          <Footer />  
         </SidebarProvider>
       </body>
     </html>
