@@ -4,6 +4,7 @@ import { SidebarProvider } from "@/context/SidebarContext";
 import Sidebar from "@/components/Sidebar";
 import "leaflet/dist/leaflet.css";
 import HeaderWrapper from "@/components/headerWrapper";
+import FooterWrapper from "@/components/FooterWrapper";
 import { Roboto_Condensed } from "next/font/google";
 import Footer from "@/components/footer";
 
@@ -25,7 +26,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <SidebarProvider>
           <HeaderWrapper />
           <main className="relative">{children}</main>
-          <Footer />  
+          <FooterWrapper />
         </SidebarProvider>
       </body>
     </html>

@@ -5,6 +5,10 @@
   --foreground: #171717;
 }
 
+html {
+  scroll-behavior: smooth;
+}
+
 @keyframes fadeOverlay {
   from {
     opacity: 0;
@@ -41,6 +45,10 @@ body {
   font-family: Arial, Helvetica, sans-serif;
 }
 
+main {
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
+}
 /* --- Reflective Logo Hover Effect --- */
 
 .reflective-logo {
