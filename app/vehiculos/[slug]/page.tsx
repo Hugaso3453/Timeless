@@ -3,6 +3,7 @@ import AnimatedCounter from "@/components/animatedCounter";
 import GallerySlider from "@/components/GallerySlider";
 import { neue2, neue6 } from "@/app/fonts/neuePlak";
 import SpecSheet from "@/components/SpecSheet";
+import VehicleActions from "@/components/VehicleActions";
 
 interface VehiclePageProps {
   params: {
@@ -203,21 +204,7 @@ export default async function VehiclePage(props: VehiclePageProps) {
           )}
 
           {/* BUTTON GROUP */}
-          <div className="flex flex-col sm:flex-row gap-6 justify-center mt-10">
-
-            <button className="px-10 py-4 rounded-md border border-white text-lg hover:bg-white hover:text-black transition">
-              Solicitar prueba
-            </button>
-
-            <button className="px-10 py-4 rounded-md bg-white text-black text-lg font-semibold hover:bg-gray-200 transition">
-              Adquirir vehículo
-            </button>
-
-            <button className="px-10 py-4 rounded-md border border-gray-400 text-lg hover:bg-white/10 transition">
-              Contactar
-            </button>
-
-          </div>
+         <VehicleActions slug={slug} />
 
         </div>
       </section>

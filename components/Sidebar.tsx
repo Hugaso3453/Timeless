@@ -228,7 +228,7 @@ export default function Sidebar() {
                               <motion.div key={item.key} variants={itemVariants}>
                                 {item.key === "signin" ? (
                                   session?.user ? (
-                                    <div className="w-full px-4 py-3 rounded-md bg-gray-100 text-black">
+                                    <div className="w-full px-4 py-3 rounded-md  text-black">
                                       Bienvenido, {session.user.name ?? "usuario"}
                                     </div>
                                   ) : (

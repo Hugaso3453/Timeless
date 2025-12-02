@@ -21,7 +21,9 @@
     "puppeteer": "^24.31.0",
     "react": "19.2.0",
     "react-dom": "19.2.0",
-    "react-leaflet": "^5.0.0"
+    "react-leaflet": "^5.0.0",
+    "resend": "^6.5.2",
+    "twilio": "^5.10.6"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",
