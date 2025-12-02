@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { timelessFont } from "../fonts/timeless";
 import { useRouter } from "next/navigation";
+import { signIn } from "next-auth/react";
 
 export default function LoginForm() {
   const [loading, setLoading] = useState(false);
@@ -22,33 +23,26 @@ export default function LoginForm() {
     setForm({ ...form, [e.target.name]: e.target.value });
   }
 
-  // ----------------------------
-  // LOGIN WITH CREDENTIALS
-  // ----------------------------
   async function handleLogin() {
     try {
       setLoading(true);
 
-      const res = await fetch("/api/auth/callback/credentials", {
-        method: "POST",
-        body: JSON.stringify({
-          email: form.email,
-          password: form.password,
-        }),
-        headers: { "Content-Type": "application/json" },
+      const result = await signIn("credentials", {
+        redirect: false,
+        email: form.email,
+        password: form.password,
       });
 
-      if (!res.ok) {
+      if (result?.error) {
         alert("Credenciales incorrectas");
-        setLoading(false);
         return;
       }
 
-      router.push("/");
-      router.refresh();
-    } finally {
-      setLoading(false);
-    }
+        router.push("/");
+        router.refresh();
+      } finally {
+        setLoading(false);
+      }
   }
 
   // ----------------------------
@@ -80,15 +74,13 @@ export default function LoginForm() {
       }
 
       // AUTO LOGIN AFTER REGISTER
-      await fetch("/api/auth/callback/credentials", {
-        method: "POST",
-        body: JSON.stringify({
-          email: form.email,
-          password: form.password,
-        }),
-        headers: { "Content-Type": "application/json" },
+      await signIn("credentials", {
+        redirect: false,
+        email: form.email,
+        password: form.password,
       });
 
+      
       router.push("/");
       router.refresh();
     } finally {
@@ -109,7 +101,7 @@ export default function LoginForm() {
       {/* TITLE */}
       <h1 className="text-xl font-semibold mb-6 text-white tracking-wide">
         {isRegister
-          ? "Crea tu cuenta para continuar"
+          ? "¿Es tu primera vez con nosotros?"
           : "¡Bienvenido! Por favor, inicia sesión"}
       </h1>
 
@@ -155,62 +147,97 @@ export default function LoginForm() {
 
       {/* REGISTER FORM */}
       {isRegister && (
-        <form className="space-y-5" onSubmit={(e) => e.preventDefault()}>
+      <form className="space-y-6" onSubmit={(e) => e.preventDefault()}>
+
+        {/* FORM TITLE + SUBTEXT */}
+        <div className="mb-4">
+          <h1 className="text-2xl font-semibold tracking-wide text-white">
+            Crea tu cuenta
+          </h1>
+          <p className="text-white/50 text-sm mt-1">
+            Solo necesitas unos segundos para comenzar.
+          </p>
+        </div>
+
+        {/* NAME */}
+        <div className="flex flex-col space-y-1">
+          <label className="text-sm text-white/70">Nombre</label>
           <input
             name="name"
             type="text"
-            placeholder="Nombre"
             value={form.name}
             onChange={handleChange}
-            className="w-full p-3 rounded-s bg-white/5 border border-white/10 text-sm focus:outline-none focus:border-white/30"
+            className="w-full p-3 rounded bg-white/5 border border-white/10 
+                      focus:outline-none focus:border-white/30"
           />
+        </div>
 
+        {/* EMAIL */}
+        <div className="flex flex-col space-y-1">
+          <label className="text-sm text-white/70">Email</label>
           <input
             name="email"
             type="email"
-            placeholder="Email"
             value={form.email}
             onChange={handleChange}
-            className="w-full p-3 rounded-s bg-white/5 border border-white/10 text-sm focus:outline-none focus:border-white/30"
+            className="w-full p-3 rounded bg-white/5 border border-white/10 
+                      focus:outline-none focus:border-white/30"
           />
+        </div>
 
+        {/* PASSWORD */}
+        <div className="flex flex-col space-y-1">
+          <label className="text-sm text-white/70">Contraseña</label>
           <input
             name="password"
             type="password"
-            placeholder="Contraseña"
             value={form.password}
             onChange={handleChange}
-            className="w-full p-3 rounded-s bg-white/5 border border-white/10 text-sm focus:outline-none focus:border-white/30"
+            className="w-full p-3 rounded bg-white/5 border border-white/10 
+                      focus:outline-none focus:border-white/30"
           />
+        </div>
 
+        {/* CONFIRM */}
+        <div className="flex flex-col space-y-1">
+          <label className="text-sm text-white/70">Confirmar contraseña</label>
           <input
             name="confirm"
             type="password"
-            placeholder="Confirmar contraseña"
             value={form.confirm}
             onChange={handleChange}
-            className="w-full p-3 rounded-s bg-white/5 border border-white/10 text-sm focus:outline-none focus:border-white/30"
+            className="w-full p-3 rounded bg-white/5 border border-white/10 
+                      focus:outline-none focus:border-white/30"
           />
+        </div>
 
+        {/* EMPLOYEE CODE */}
+        <div className="flex flex-col space-y-1">
+          <label className="text-sm text-white/70">Código de empleado (opcional)</label>
           <input
             name="employeeCode"
             type="text"
-            placeholder="Código de empleado (opcional)"
             value={form.employeeCode}
             onChange={handleChange}
-            className="w-full p-3 rounded-s bg-white/5 border border-white/10 text-sm focus:outline-none focus:border-white/30"
+            className="w-full p-3 rounded bg-white/5 border border-white/10 
+                      focus:outline-none focus:border-white/30"
           />
+        </div>
 
-          <button
-            type="button"
-            onClick={handleRegister}
-            disabled={loading}
-            className="w-full p-3 bg-white/10 hover:bg-white/20 rounded-s border border-white/20 text-m transition disabled:opacity-50"
-          >
-            {loading ? "Creando cuenta..." : "Registrarse"}
-          </button>
-        </form>
-      )}
+        {/* SUBMIT BUTTON */}
+        <button
+          type="button"
+          onClick={handleRegister}
+          disabled={loading}
+          className="w-full p-3 bg-white/10 hover:bg-white/20 rounded border border-white/20 
+                    transition disabled:opacity-50 text-white font-medium tracking-wide"
+        >
+          {loading ? "Creando cuenta..." : "Registrarse"}
+        </button>
+
+      </form>
+    )}
+
 
       {/* TOGGLE */}
       <div className="text-center mt-6 text-white/60 text-sm">

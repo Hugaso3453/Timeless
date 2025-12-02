@@ -5,7 +5,7 @@ interface SpecSectionProps {
 
 export default function SpecSection({ title, rows }: SpecSectionProps) {
   return (
-    <div className="mb-12">
+    <div className="mb-4">
       <h3 className="text-xl font-semibold mb-4 tracking-wide">{title}</h3>
 
       <div className="border border-white/20 rounded-lg overflow-hidden">

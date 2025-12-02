@@ -3,9 +3,16 @@
 import { Bars3Icon, UserCircleIcon } from "@heroicons/react/24/outline";
 import { useSidebar } from "@/context/SidebarContext";
 import { timelessFont } from "@/app/fonts/timeless";
+import { accountSection } from "@/lib/sidebarData";
 
 export default function Header() {
-  const { isOpen, open } = useSidebar();
+  const { 
+      isOpen, 
+      open, 
+      setSelectedSection, 
+      setSelectedItem 
+    } = useSidebar();
+
 
   return (
     <header className="w-full h-16 absolute top-0 left-0 z-30">
@@ -38,9 +45,17 @@ export default function Header() {
         </div>
 
         {/* Right: Account icon */}
-        <button className="p-2 hover:bg-white/10 rounded-full">
+        <button
+          className="p-2 hover:bg-white/10 rounded-full"
+          onClick={() => {
+            open();
+            setSelectedSection(accountSection.title);
+            setSelectedItem(null);
+          }}
+        >
           <UserCircleIcon className="h-7 w-7 text-white" />
         </button>
+
 
       </div>
     </header>

@@ -47,7 +47,7 @@ export default function GallerySlider({ images }: { images: string[] }) {
   }, [transition]);
 
   return (
-    <section className="w-full bg-black text-white py-20">
+    <section className="w-full bg-black text-white">
       <h2 className={`${neue6.className} text-4xl font-semibold tracking-tight px-6 mb-12`}>
         GALERIA
       </h2>

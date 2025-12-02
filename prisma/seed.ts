@@ -13,6 +13,9 @@ async function main() {
       address: "Avenida Velocidad 911",
       phone: "+34 600 000 000",
       email: "info@timelessmotors.com",
+
+      latitude: 36.7213,
+      longitude: -4.4213
     },
   });
 
@@ -30,6 +33,9 @@ async function main() {
       price: 199000,
       mileageKm: 5500,
       condition: "USED",
+
+      thumbnailUrl: "/vehicles/porsche-911-gt3/thumb.jpg", // ← ⭐ Add this line
+
 
       // Marketing
       heroTitle: "Precision Reimagined",
@@ -105,23 +111,31 @@ async function main() {
       {
         vehicleId: vehicle.id,
         type: MediaType.IMAGE,
+        url: "/vehicles/porsche-911-gt3/img2.jpg",
+        alt: "Porsche 911 GT3 second hero",
+        isHero: true,   // ← NEW hero image
+        sortOrder: 1,
+      },
+      {
+        vehicleId: vehicle.id,
+        type: MediaType.IMAGE,
         url: "/vehicles/porsche-911-gt3/gallery/01.jpg",
         alt: "Front view",
-        sortOrder: 1,
+        sortOrder: 2,
       },
       {
         vehicleId: vehicle.id,
         type: MediaType.IMAGE,
         url: "/vehicles/porsche-911-gt3/gallery/02.jpg",
         alt: "Rear view",
-        sortOrder: 2,
+        sortOrder: 3,
       },
       {
         vehicleId: vehicle.id,
         type: MediaType.IMAGE,
         url: "/vehicles/porsche-911-gt3/gallery/03.jpg",
         alt: "Interior",
-        sortOrder: 3,
+        sortOrder: 4,
       },
     ],
   });

@@ -2,9 +2,10 @@
 
 import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
 import type { LatLngExpression } from "leaflet";
-
+import "leaflet/dist/leaflet.css";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
+import { useEffect, useState } from "react";
 
 const DefaultIcon = L.icon({
   iconUrl: "/marker-icon.png",
@@ -23,13 +24,6 @@ export type Dealership = {
   position: LatLngExpression;
 };
 
-const dealerships: Dealership[] = [
-  { id: 1, name: "Timeless Madrid", city: "Madrid", position: [40.4168, -3.7038] },
-  { id: 2, name: "Timeless Barcelona", city: "Barcelona", position: [41.3874, 2.1686] },
-  { id: 3, name: "Timeless Valencia", city: "Valencia", position: [39.4699, -0.3763] },
-  { id: 4, name: "Timeless Sevilla", city: "Sevilla", position: [37.3891, -5.9845] },
-];
-
 const SPAIN_CENTER: LatLngExpression = [40.0, -3.7];
 
 type Props = {
@@ -37,8 +31,31 @@ type Props = {
 };
 
 export default function DealershipMap({ onDealerClick }: Props) {
+  
+  const [dealerships, setDealerships] = useState<Dealership[]>([]);
+
+  useEffect(() => {
+    async function loadDealers() {
+      const res = await fetch("/api/dealerships");
+      const data = await res.json();
+      setDealerships(
+        data.map((d: any) => ({
+          id: d.id,
+          name: d.name,
+          city: d.city,
+          position: [d.latitude, d.longitude] as LatLngExpression,
+        }))
+      );
+    }
+
+    loadDealers();
+  }, []);
+
+  if (typeof window === "undefined") return null;
+
   return (
     <MapContainer
+      key="dealermap" 
       center={SPAIN_CENTER}
       zoom={6.5}
       scrollWheelZoom={false}

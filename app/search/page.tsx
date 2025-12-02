@@ -1,11 +1,32 @@
 // app/search/page.tsx
 "use client";
 
-import { useState } from "react";
-import DealershipMap, { Dealership } from "@/components/DealershipMap";
+import { useEffect, useState } from "react";
+import dynamic from "next/dynamic";
+import type { Dealership } from "@/components/DealershipMap";
+import { useRouter } from "next/navigation";
+import { XMarkIcon } from "@heroicons/react/24/solid";
+
+const DealershipMap = dynamic(() => import("@/components/DealershipMap"), {
+  ssr: false,
+});
 
 export default function SearchPage() {
   const [selectedDealer, setSelectedDealer] = useState<Dealership | null>(null);
+  const [vehicles, setVehicles] = useState([]); 
+  const router = useRouter();
+
+  useEffect(() => {
+  if (!selectedDealer) return;
+
+  async function loadVehicles() {
+    const res = await fetch(`/api/vehicles?dealerId=${selectedDealer?.id}`);
+    const data = await res.json();
+    setVehicles(data);
+  }
+
+  loadVehicles();
+}, [selectedDealer]);
 
   return (
     <div className="relative h-screen overflow-hidden bg-black">
@@ -54,31 +75,39 @@ export default function SearchPage() {
 
               <button
                 onClick={() => setSelectedDealer(null)}
-                className="
-                  px-3 py-1 
-                  rounded-md 
-                  bg-white/10 hover:bg-white/20 
-                  text-xs md:text-sm
-                "
+                className="p-2"
               >
-                Cerrar
+                <XMarkIcon className="h-6 w-6 text-white" />
               </button>
             </div>
 
             {/* content */}
             <div className="overflow-y-auto pr-1 max-h-[85vh] space-y-3 text-sm text-white/70">
-              <p>
-                Aquí irán los coches disponibles en este concesionario. De momento
-                esto es contenido de prueba.
-              </p>
-
               {/* GRID: TWO CARDS PER ROW */}
               <div className="grid grid-cols-2 gap-4">
-                {Array.from({ length: 6 }).map((_, i) => (
+                 {vehicles.map((v: any) => (
                   <div
-                    key={i}
-                    className="h-48 rounded-xl bg-white/5 border border-white/10"
-                  />
+                    key={v.id}
+                    onClick={() => router.push(`/vehiculos/${v.slug}`)}
+                    className="
+                      relative h-48 rounded-md overflow-hidden
+                      cursor-pointer
+                      transition duration-200
+                      hover:scale-[1.03] hover:shadow-lg active:scale-[0.98]
+                      bg-white/5 border border-white/10
+                    "
+                  >
+                    <img
+                      src={v.thumbnailUrl ?? v.media?.[0]?.url ?? "/placeholder.jpg"}
+                      className="h-full w-full object-cover"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent" />
+                    <div className="absolute bottom-2 left-2">
+                      <p className="text-white font-semibold text-sm">
+                        {v.brand} {v.model}
+                      </p>
+                    </div>
+                  </div>
                 ))}
               </div>
             </div>

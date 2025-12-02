@@ -12,7 +12,10 @@ export default function FooterWrapper() {
   ];
 
 
-  const hide = HIDDEN_ROUTES.some(route => pathname.startsWith(route));
+  const hide =
+    pathname.startsWith("/vehiculos/") &&
+    pathname.endsWith("/pdf") ||
+    HIDDEN_ROUTES.some(route => pathname.startsWith(route));
 
   if (hide) return null;
 

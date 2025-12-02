@@ -7,6 +7,7 @@ import HeaderWrapper from "@/components/headerWrapper";
 import FooterWrapper from "@/components/FooterWrapper";
 import { Roboto_Condensed } from "next/font/google";
 import Footer from "@/components/footer";
+import Providers from "./providers";
 
 const robotoCondensed = Roboto_Condensed({
   subsets: ["latin"],
@@ -23,11 +24,13 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en">
       <body className={robotoCondensed.className}>
+      <Providers>
         <SidebarProvider>
           <HeaderWrapper />
           <main className="relative">{children}</main>
           <FooterWrapper />
         </SidebarProvider>
+      </Providers>
       </body>
     </html>
   );

@@ -3,7 +3,41 @@
 
 import { XMarkIcon } from "@heroicons/react/24/outline";
 import { useSidebar } from "@/context/SidebarContext";
-import { sidebarSections } from "@/lib/sidebarData";
+import { accountSection, sidebarSections } from "@/lib/sidebarData";
+import { UserIcon } from "@heroicons/react/24/outline";
+import { ChevronRightIcon } from "@heroicons/react/24/outline";
+import { motion, AnimatePresence } from "framer-motion";
+import type { Variants } from "framer-motion";
+import { neue2, neue3, neue6, neue7, neue8, neue9 } from "@/app/fonts/neuePlak";
+import { agdasima1, agdasima2 } from "@/app/fonts/Agdasima";
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
+import type { Vehicle, MediaAsset } from "@prisma/client";
+import { useSession } from "next-auth/react";
+
+type VehicleWithMedia = Vehicle & { media: MediaAsset[] };
+
+const containerVariants: Variants = {
+  hidden: {},
+  show: {
+    transition: {
+      staggerChildren: 0.08,
+    },
+  },
+};
+
+const itemVariants: Variants = {
+  hidden: { opacity: 0, y: 10 },
+  show: {
+    opacity: 1,
+    y: 0,
+    transition: {
+      duration: 0.35,
+      ease: "easeOut", // literal that matches FM's union
+    },
+  },
+};
+
 
 export default function Sidebar() {
   const {
@@ -15,132 +49,266 @@ export default function Sidebar() {
     setSelectedItem,
   } = useSidebar();
 
-  // Fallback to first section if none selected
-  const currentSection =
-    sidebarSections.find((s) => s.title === selectedSection) ??
-    sidebarSections[0];
+  const router = useRouter();
+
+  const [vehicles, setVehicles] = useState<VehicleWithMedia[]>([]);
+
+  const { data: session } = useSession();
+
+  useEffect(() => {
+  if (!selectedItem) return;
+  if (selectedSectionObj?.type !== "images") return;
+
+  async function load() {
+    const res = await fetch(`/api/vehicles?category=${selectedItem}`);
+    const data = await res.json();
+    setVehicles(data);
+  }
+
+  load();
+}, [selectedItem]);
+
+
+  const selectedSectionObj = 
+  sidebarSections.find((s) => s.title === selectedSection) 
+  || (selectedSection === accountSection.title ? accountSection : null);
+
+  const selectedItemObj = selectedSectionObj?.items.find(
+    (item) => item.key === selectedItem
+  ) || null;
 
   return (
     <>
       {/* Background overlay */}
       <div
         onClick={close}
-        className={`fixed inset-0 bg-black/30 backdrop-blur-sm z-50 transition-opacity duration-300
+        className={`fixed inset-0 bg-black/10 backdrop-blur-sm z-50 transition-opacity duration-300
         ${isOpen ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"}`}
       />
 
-    <div
-    className={`
-        fixed top-6 z-[200] transition-all duration-300
-        ${isOpen ? "translate-x-0 opacity-100" : "-translate-x-8 opacity-0"}
-    `}
-    style={{
-        left: "calc(clamp(350px,80%,800px) + 12px)",
-    }}
-    >
-    <button
-        onClick={close}
-        className="
-        p-2 
-        rounded-full 
-        bg-white 
-        shadow-lg 
-        hover:bg-gray-100 
-        transition
-        "
-    >
-        <XMarkIcon className="h-6 w-6 text-gray-700" />
-    </button>
-    </div>
-
-
       {/* Sliding sidebar */}
-      <aside
-        className={`fixed top-0 left-0 h-full bg-white shadow-lg p-0 transition-transform duration-300
-        w-[clamp(350px,80%,800px)] z-60
-        ${isOpen ? "translate-x-0" : "-translate-x-full"}`}
-      >
+        <aside
+          className={`
+            fixed top-6 left-6 h-[calc(100vh-3rem)] 
+            bg-white/90 backdrop-blur-md 
+            shadow-2xl rounded-md 
+            transition-all duration-300 z-[200] w-[65vw]
+
+            ${isOpen 
+              ? "opacity-100 scale-100 pointer-events-auto" 
+              : "opacity-0 scale-95 pointer-events-none"
+            }
+          `}
+        >
+          {/* Close button INSIDE the sidebar */}
+        <button
+          onClick={close}
+          className="
+            absolute top-4 left-4
+            p-2
+            transition
+            z-[300]
+            translate-x-[-0.5vw]
+            translate-y-[-0.5vw]
+          "
+        >
+          <XMarkIcon className="h-5 w-5 text-gray-700" />
+        </button>
+
         <div className="flex h-full">
           {/* LEFT: sections + options */}
-          <div className="w-[35%] border-r p-4 overflow-y-auto">
+          <motion.div
+            className="w-[35%] border-r p-4 overflow-y-auto"
+            variants={containerVariants}
+            initial="hidden"
+            animate={isOpen ? "show" : "hidden"}
+          >
+
             {/* Header + close */}
-            <div className="flex justify-between items-center mb-6">
-              <h2 className="text-lg font-semibold">Menu</h2>
-            </div>
 
             {/* Sections */}
             {sidebarSections.map((section) => (
-              <div key={section.title} className="mb-6">
-                <h3 className="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-2">
-                  {section.title}
-                </h3>
+              <div key={section.title} className= "mb-1 pt-9.5">
+                  <motion.h3
+                    variants={itemVariants}
+                    className={`${agdasima2.className} text-sm font-semibold text-black/50 text-xl uppercase tracking-wide mb-2`}
+                  >
+                    {section.title}
+                  </motion.h3>
 
-                <ul className="flex flex-col">
-                  {section.items.map((item) => (
-                    <li
-                      key={item.key}
-                      onClick={() => {
-                        setSelectedSection(section.title);
-                        setSelectedItem(item.key);
-                      }}
-                      className={`py-2 px-1 flex justify-between items-center cursor-pointer
-                        hover:text-black
-                        ${
-                          selectedItem === item.key
-                            ? "text-black font-medium"
-                            : "text-gray-700"
-                        }`}
-                    >
-                      {item.label}
-
-                      {/* Arrow only if item is NOT a direct link */}
-                      {!item.link && (
-                        <span className="text-gray-400">›</span>
-                      )}
-                    </li>
+                <ul>
+                  {section.items.map((item, index) => (
+                  <motion.li
+                    variants={itemVariants}
+                    key={item.key}
+                    onClick={() => {
+                      setSelectedSection(section.title);
+                      setSelectedItem(item.key);
+                    }}
+                    className={`${agdasima1.className} cursor-pointer py-2 px-3 text-2xl flex items-center justify-between rounded-md transition
+                      ${selectedItem === item.key ? "text-black font-medium" : "text-gray-700"}
+                    `}
+                  >
+                    <span>{item.label}</span>
+                    <ChevronRightIcon className="h-5 w-5 text-gray-400" />
+                  </motion.li>
                   ))}
                 </ul>
               </div>
             ))}
-          </div>
 
-          {/* RIGHT: section content (images-only OR text-only) */}
-          <div className="w-[65%] p-4 overflow-y-auto">
-            <h2 className="text-lg font-semibold mb-4">
-              {selectedItem || "Select an option"}
-            </h2>
+              <motion.div
+                variants={itemVariants}
+                onClick={() => {
+                  setSelectedSection(accountSection.title);
+                  setSelectedItem(null);
+                }}
+                className={`${agdasima1.className}
+                  flex items-center justify-between cursor-pointer 
+                  py-3 px-3 mt-10 rounded-md transition translate-y-[35vh]
+                  ${selectedSection === accountSection.title ? "text-black font-medium" : "text-gray-700"}
+                `}
+              >
+                <div className="flex items-center gap-2">
+                  <UserIcon className="h-5 w-5 text-gray-900" />
+                  <span className="text-2xl">{accountSection.title}</span>
+                </div>
+              </motion.div>
+          </motion.div>
 
-            {/* IMAGE-type section */}
-            {currentSection.type === "images" && (
-              <div className="grid grid-cols-1 gap-4">
-                <div className="h-32 bg-gray-200 rounded-md flex items-center justify-center">
-                  {selectedItem} Image 1
-                </div>
-                <div className="h-32 bg-gray-200 rounded-md flex items-center justify-center">
-                  {selectedItem} Image 2
-                </div>
-                <div className="h-32 bg-gray-200 rounded-md flex items-center justify-center">
-                  {selectedItem} Image 3
-                </div>
-              </div>
-            )}
+              {/* RIGHT: section content (images-only OR text-only) */}
+                <div className="w-[65%] p-4 overflow-y-auto">
+                  <motion.div
+                    key={selectedItem || selectedSection} 
+                    // key ensures animation triggers on every change
+                    variants={containerVariants}
+                    initial="hidden"
+                    animate="show"
+                    className="w-full h-full"
+                  >
+                      {/* IMAGE-type SECTION (Cars, SUVs, EV, etc.) */}
+                        {selectedSectionObj?.type === "images" && selectedItem && (
+                        <>
+                          {vehicles.length > 0 ? (
+                            <div className="grid grid-cols-1 gap-4">
+                              {vehicles.map((v) => (
+                                <div key={v.id} 
+                                onClick={() => {router.push(`/vehiculos/${v.slug}`); close();}}
+                                className="relative h-48 w-full rounded-md overflow-hidden cursor-pointer transition-all duration-200 hover:scale[1.03] hover:shadow-lg active:scale-[0.98]">
+                                  <img
+                                    src={v.thumbnailUrl ?? v.media?.[0]?.url ?? "/thumb.jpg"}
+                                    alt={v.model ?? "Vehicle"}
+                                    className="h-full w-full object-cover rounded-md"
+                                  />
 
-            {/* TEXT-type section */}
-            {currentSection.type === "text" && (
-              <div className="flex flex-col gap-4 text-gray-700">
-                <p>Details for: {selectedItem}</p>
-                <p>
-                  This panel is text-only for this section — you can turn these
-                  into descriptions, links, or lists.
-                </p>
-                <p>
-                  Later we’ll plug in real content depending on the selected
-                  item.
-                </p>
-              </div>
-            )}
-          </div>
-        </div>
+                                  <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent" />
+
+                                  <div className="absolute bottom-2 left-3">
+                                    <p className="text-white text-lg font-semibold drop-shadow">
+                                      {v.brand} {v.model}
+                                    </p>
+                                  </div>
+
+                                </div>
+                              ))}
+                            </div>
+                          ) : (
+                            <p>No vehicles found.</p>
+                          )}
+                        </>
+                      )}
+
+
+
+                      {/* TEXT-type section */}
+                      {selectedSectionObj?.type === "text" && !selectedItem && (
+                        <div className="space-y-4 pt-[7.5vh]">
+                          <div className={`${neue9.className} flex flex-col gap-2 text-black text-3xl`}>
+                            {selectedSectionObj.items.map((item) => (
+                              <motion.div key={item.key} variants={itemVariants}>
+                                {item.key === "signin" ? (
+                                  session?.user ? (
+                                    <div className="w-full px-4 py-3 rounded-md bg-gray-100 text-black">
+                                      Bienvenido, {session.user.name ?? "usuario"}
+                                    </div>
+                                  ) : (
+                                    <button
+                                      onClick={() => {
+                                        router.push("/login");
+                                        close();
+                                      }}
+                                      className="
+                                        w-full px-4 py-3 rounded-md 
+                                        bg-black text-white 
+                                        transition duration-200 
+                                        hover:bg-black/80
+                                      "
+                                    >
+                                      {item.label}
+                                    </button>
+                                  )
+                                ) : item.key === "account" ? (
+                                    /* NEW: ACCOUNT MANAGEMENT REDIRECT */
+                                    <button
+                                      onClick={() => {
+                                        router.push("/cuenta");
+                                        close();
+                                      }}
+                                      className="
+                                        text-left px-4 py-2 rounded
+                                        transition-colors duration-200
+                                        hover:text-black/70
+                                      "
+                                    >
+                                      {item.label}
+                                    </button>
+
+                                  ) : (
+                                  // Normal text item (unchanged behavior)
+                                  <button
+                                    onClick={() => {
+                                      setSelectedSection(selectedSectionObj.title);
+                                      setSelectedItem(item.key);
+                                    }}
+                                    className="
+                                      text-left px-4 py-2 rounded 
+                                      transition-colors duration-200 
+                                      hover:text-black/70
+                                    "
+                                  >
+                                    {item.label}
+                                  </button>
+                                )}
+                              </motion.div>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+
+
+                      {selectedSectionObj?.type === "text" && selectedItemObj && (
+                        <div className="space-y-4 pt-[7.5vh]">
+
+                          {selectedItemObj.options ? (
+                            <div className={`${neue9.className} flex flex-col gap-2 text-black text-3xl`}>
+                              {selectedItemObj.options.map((op) => (
+                                <motion.button
+                                  key={op}
+                                  variants={itemVariants}
+                                  className="text-left px-4 py-2 rounded transition-colors duration-200 hover:text-black/70"
+                                >
+                                  {op}
+                                </motion.button>
+                              ))}
+                            </div>
+                          ) : (
+                            <p className="text-gray-500">No hay opciones definidas.</p>
+                          )}
+                        </div>
+                      )}
+                  </motion.div>
+                </div>
+            </div>
       </aside>
     </>
   );

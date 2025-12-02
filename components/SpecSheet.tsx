@@ -1,4 +1,4 @@
-import { neue6 } from "@/app/fonts/neuePlak";
+import { neue6, neue5 } from "@/app/fonts/neuePlak";
 import SpecSection from "./SpecSection";
 import type { Vehicle } from "@prisma/client";
 
@@ -8,12 +8,15 @@ interface SpecSheetProps {
 
 export default function SpecSheet({ vehicle }: SpecSheetProps) {
   return (
-    <section className="bg-black text-white py-18 px-4">
-      <h2 className={`${neue6.className} text-4xl font-semibold tracking-tight px-6 mb-20`}>
-        FICHA TECNICA
+    <section className="bg-black text-white py-28 px-4">
+
+    <div className="relative h-[10vh] overflow-x-hidden">
+      <h2 className={`${neue6.className} absolute left-0 top-0 text-4xl translate-y-[5vh] translate-x-[13.5vw] font-semibold tracking-tight px-6 mb-20`}>
+        ESPECIFICACIONES
       </h2>
+    </div>
       
-      <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-16">
+      <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-16 border border-white/40 rounded-md px-10 py-10">
 
         {/* PERFORMANCE */}
         <SpecSection
@@ -106,14 +109,23 @@ export default function SpecSheet({ vehicle }: SpecSheetProps) {
           ]}
         />
 
+        <div className="col-span-1 md:col-span-2 text-center">
+            <h2 className={`${neue5.className} text-3xl py-3 translate-y-[-0.7vh] overflow-y-hidden`}>
+              FICHA TECNICA
+            </h2>
+
+            <a
+              href={`/api/pdf/vehicle/${vehicle.slug}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-block px-8 py-3 bg-white text-black rounded-md font-semibold hover:bg-gray-200 transition"
+            >
+              Download PDF
+            </a>
+        </div>
       </div>
 
       {/* DOWNLOAD BUTTON */}
-      <div className="text-center mt-16">
-        <button className="px-8 py-3 bg-white text-black rounded-md font-semibold hover:bg-gray-200 transition">
-          Download PDF
-        </button>
-      </div>
     </section>
   );
 }

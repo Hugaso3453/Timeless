@@ -99,21 +99,21 @@ export default async function VehiclePage(props: VehiclePageProps) {
       <section className="w-full bg-white text-black py-24">
         <div className="text-center mb-20 px-4">
           <h2 className="text-5xl font-semibold tracking-tight mb-2">
-            Rendimiento que define una era
+            {vehicle.heroTaglineTitle ?? "Prestaciones destacadas"}
           </h2>
           <p className="text-gray-700 text-xl max-w-xl mx-auto">
-            Cifras que reflejan precisión alemana y eficiencia extrema.
+             {vehicle.heroTaglineBody ?? "Datos clave que definen el carácter de este vehículo."}
           </p>
         </div>
 
         <div className="max-w-7xl mx-auto px-6 grid grid-cols-1 md:grid-cols-3 gap-16 min-h-[630px]">
 
           {/* LEFT HERO IMAGE */}
-          <div className="col-span-2 flex items-center justify-center overflow-hidden rounded-md">
+          <div className="col-span-2 translate-x-[-8vw] flex items-center justify-center overflow-hidden rounded-md">
             <img
               src={heroImages?.[0] ?? "/placeholder.jpg"}
               alt={`${brand} ${model}`}
-              className="w-full object-contain"
+              className="w-full object-contain rounded-md"
             />
           </div>
 
@@ -167,6 +167,61 @@ export default async function VehiclePage(props: VehiclePageProps) {
       <section>
         <GallerySlider images={galleryImages} />
       </section>
+      {/* PRICE & TEST DRIVE SECTION */}
+      <section className="relative w-full h-[85vh] bg-black text-white mt-30 mb-10">
+
+        {/* BACKGROUND IMAGE */}
+        <img
+          src={heroImages?.[1] ?? heroImages?.[0] ?? "/placeholder.jpg"}
+          alt={`${brand} ${model}`}
+          className="absolute inset-0 w-full h-full object-cover"
+        />
+
+        {/* DARK OVERLAY */}
+        <div className="absolute inset-0 bg-gradient-to-b from-black/70 via-black/40 to-black/95 backdrop-blur-[1px]"></div>
+
+        {/* CONTENT INSIDE THE IMAGE */}
+        <div className="absolute inset-0 flex flex-col items-center justify-center text-center px-8 space-y-6">
+
+          <h2 className={`${neue6.className} text-5xl font-semibold tracking-tight`}>
+            Solicita una prueba de conducción
+          </h2>
+
+          <p className="text-gray-200 text-lg max-w-2xl mx-auto leading-relaxed">
+            Experimenta el {brand} {model} como debe hacerse: en movimiento.  
+            Programa tu prueba o formaliza la adquisición.
+          </p>
+
+          {/* PRICE */}
+          {vehicle.price && (
+            <p className="text-4xl font-bold mt-4 drop-shadow-lg">
+              {new Intl.NumberFormat("es-ES", {
+                style: "currency",
+                currency: "EUR"
+              }).format(vehicle.price)}
+            </p>
+          )}
+
+          {/* BUTTON GROUP */}
+          <div className="flex flex-col sm:flex-row gap-6 justify-center mt-10">
+
+            <button className="px-10 py-4 rounded-md border border-white text-lg hover:bg-white hover:text-black transition">
+              Solicitar prueba
+            </button>
+
+            <button className="px-10 py-4 rounded-md bg-white text-black text-lg font-semibold hover:bg-gray-200 transition">
+              Adquirir vehículo
+            </button>
+
+            <button className="px-10 py-4 rounded-md border border-gray-400 text-lg hover:bg-white/10 transition">
+              Contactar
+            </button>
+
+          </div>
+
+        </div>
+      </section>
+
       <section>
         <SpecSheet vehicle={vehicle} />
       </section>
