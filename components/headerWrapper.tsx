@@ -10,6 +10,7 @@ export default function HeaderWrapper() {
   const HIDDEN_ROUTES = [
     "/login",
     "/userSelect",
+    "/admin"
   ];
 
   const hide =

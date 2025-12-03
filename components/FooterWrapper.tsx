@@ -9,6 +9,7 @@ export default function FooterWrapper() {
   const HIDDEN_ROUTES = [
     "/login",
     "/userSelect",
+    "/admin",
   ];
 
 
