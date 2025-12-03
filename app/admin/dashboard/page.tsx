@@ -249,7 +249,15 @@ export default async function DashboardPage() {
   // For now, we hand it to a client component that just dumps JSON.
   return (
     <div>
-      <h1 className="text-3xl font-semibold mb-6">Dashboard</h1>
+      <div className="mb-8">
+        <h1 className="text-3xl font-semibold tracking-tight">
+          Bienvenido, {session.user?.name || "Usuario"}
+        </h1>
+        <p className="text-neutral-400 mt-1">
+          Resumen de actividad
+        </p>
+      </div>
+
       <DashboardCharts data={data} />
     </div>
   );

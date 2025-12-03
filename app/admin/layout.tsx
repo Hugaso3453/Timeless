@@ -21,7 +21,7 @@ export default async function AdminLayout({
         <h2 className="text-xl font-semibold mb-8 tracking-tight">Timeless Admin</h2>
 
         <nav className="flex flex-col gap-4 text-neutral-400">
-          <a href="/admin" className="hover:text-white transition-colors">
+          <a href="/admin/dashboard" className="hover:text-white transition-colors">
             Resumen
           </a>
           <a href="/admin/vehicles" className="hover:text-white transition-colors">
@@ -35,9 +35,6 @@ export default async function AdminLayout({
           </a>
           <a href="/admin/users" className="hover:text-white transition-colors">
             Usuarios
-          </a>
-          <a href="/admin/content" className="hover:text-white transition-colors">
-            Contenido
           </a>
         </nav>
       </aside>

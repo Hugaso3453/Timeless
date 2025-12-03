@@ -14,7 +14,6 @@ export default function LoginForm() {
     email: "",
     password: "",
     confirm: "",
-    employeeCode: "",
   });
 
   const router = useRouter();
@@ -205,19 +204,6 @@ export default function LoginForm() {
             name="confirm"
             type="password"
             value={form.confirm}
-            onChange={handleChange}
-            className="w-full p-3 rounded bg-white/5 border border-white/10 
-                      focus:outline-none focus:border-white/30"
-          />
-        </div>
-
-        {/* EMPLOYEE CODE */}
-        <div className="flex flex-col space-y-1">
-          <label className="text-sm text-white/70">Código de empleado (opcional)</label>
-          <input
-            name="employeeCode"
-            type="text"
-            value={form.employeeCode}
             onChange={handleChange}
             className="w-full p-3 rounded bg-white/5 border border-white/10 
                       focus:outline-none focus:border-white/30"
